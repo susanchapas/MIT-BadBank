@@ -1,0 +1,28 @@
+body {
+    background-image: url('/res/hqBlueMountain.jpg');
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+}
+
+.navbar-brand {
+    color:white;
+}
+
+.nav-link {
+    color: lightskyblue;
+    font-weight: lighter;
+}
+
+.card-title {
+    color: lightskyblue;
+}
+
+.card-header {
+    color: #ffd23f;
+}
+
+.highlighted {
+    background-color: #134067;
+}
+
