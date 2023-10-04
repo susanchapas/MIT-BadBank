@@ -27,6 +27,9 @@ function Withdraw(){
       if (parseFloat(withdrawalAmount) != withdrawalAmount) {
         setStatus("The withdrawal minimum is $1. Please make sure to type a number.")
       }
+      else if (parseFloat(withdrawalAmount) <= 0.99){
+        setStatus("The withdrawal minimum is $1. Please try again.")
+      }
       else if (accounts[loggedIn].balance < parseFloat(withdrawalAmount)){
         setStatus("Overdraft alert: Insufficient funds")
       }
@@ -57,16 +60,16 @@ function Withdraw(){
       status={status}
       body={show ? (  
         <form>
-        <div class="mb-3">
-          <label class="form-label">{loggedIn === -1 ? "Log in to make a withdrawal." : "Current Balance: $" + accounts[loggedIn].balance}</label>
+        <div className="mb-3">
+          <label className="form-label">{loggedIn === -1 ? "Log in to make a withdrawal." : "Current Balance: $" + accounts[loggedIn].balance}</label>
         </div>
         {
           loggedIn === -1 ?
           null :
           <>
-            <div class="mb-3">
-          <label for="withdrawalAmount" class="form-label">Withdrawal Amount</label>
-          <input type="number" min="1" class="form-control" id="withdrawalAmount" placeholder="Enter a number here."
+            <div className="mb-3">
+          <label for="withdrawalAmount" className="form-label">Withdrawal Amount</label>
+          <input type="number" min="1" className="form-control" id="withdrawalAmount" placeholder="Enter a number here."
             value={withdrawalAmount} onChange={e => setWithdrawalAmount(e.currentTarget.value)}>
           </input>
         </div>

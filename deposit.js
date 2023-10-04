@@ -27,6 +27,9 @@ function Deposit(){
       if (parseFloat(depositAmount) != depositAmount){
         setStatus("The deposit minimum is $1. Please make sure to type a number.")
       }
+      else if (parseFloat(depositAmount) <= 0.99){
+        setStatus("The deposit minimum is $1. Please try again.")
+      }
       else {
         const newTransaction = accounts[loggedIn].name + " deposited $" + depositAmount + " " + new Date()
         setAccounts(oldAccounts => {

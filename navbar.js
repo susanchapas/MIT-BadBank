@@ -76,6 +76,7 @@ function NavBar(){
         <ul className="navbar-nav">
           {navList.map((item, index) => {
             return <li 
+              key={`nav-bar-item-${index}`}
               className={`nav-item ${selectedNav === index ? "highlighted" : ""}`} 
               onClick={() => {setSelectedNav(index)}}
             >
