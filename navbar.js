@@ -65,7 +65,7 @@ function NavBar(){
   return(
     <>
     <nav className="navbar bg-dark navbar-expand-lg bg-dark">
-      <a className="navbar-brand" href="#">Apex Bank</a>
+      <a className="navbar-brand" onClick={() => {setSelectedNav(-1)}} href="#">Apex Bank</a>
       <button className="navbar-toggler" type="button" 
         data-toggle="collapse" 
         data-target="#navbarNav" 
