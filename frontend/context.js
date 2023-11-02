@@ -22,3 +22,12 @@ function Card(props){
       </div>      
     );    
   }
+
+  function Form(props){
+    return(
+      <form>
+        <div className="form-control">
+        </div>
+      </form>
+    )
+  }

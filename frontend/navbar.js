@@ -6,6 +6,7 @@ function NavBar(){
   //const balancePopover = React.useRef()
   const allDataPopover = React.useRef()
   const [selectedNav, setSelectedNav] = React.useState()
+  const [loggedIn] = React.useContext(UserContext);
 
   React.useEffect(() => {
     var createAccountPopoverInstance = new bootstrap.Tooltip(createAccountPopover.current)
@@ -14,16 +15,15 @@ function NavBar(){
     var withdrawPopoverInstance = new bootstrap.Tooltip(withdrawPopover.current)
     //var balancePopoverInstance = new bootstrap.Tooltip(balancePopover.current)
     var allDataPopoverInstance = new bootstrap.Tooltip(allDataPopover.current)
-
   }, [])
 
   const navList = [
     {
-      id: "createAccountNav",
+      id: "createAccount",
       ref: createAccountPopover,
       popoverTitle: "Start depositing and withdrawing from an account",
       href: "#/CreateAccount/",
-      content: "Create Account"
+      content: "Create An Account"
     },
     {
       id: "logInNav",
@@ -65,7 +65,7 @@ function NavBar(){
   return(
     <>
     <nav className="navbar bg-dark navbar-expand-lg bg-dark">
-      <a className="navbar-brand" onClick={() => {setSelectedNav(-1)}} href="#">Apex Bank</a>
+      <a className="navbar-brand add-margin" onClick={() => {setSelectedNav(-1)}} href="#">Apex Bank</a>
       <button className="navbar-toggler" type="button" 
         data-toggle="collapse" 
         data-target="#navbarNav" 
@@ -88,7 +88,10 @@ function NavBar(){
                   {item.content}
               </a>
             </li>
-          })}     
+          })}
+          <li className={`nav-name nav-link`}>
+            {!loggedIn ? null : loggedIn.name}
+          </li>     
         </ul>
       </div>
     </nav>

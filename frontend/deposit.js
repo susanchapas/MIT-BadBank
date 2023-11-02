@@ -3,7 +3,7 @@ function Deposit(){
   const [depositAmount, setDepositAmount] = React.useState();
   const [status, setStatus] = React.useState('')
   const [buttonDisabled, setButtonDisabled] = React.useState(true);
-  const [accounts, setAccounts, loggedIn] = React.useContext(UserContext);
+  const [loggedIn, setLoggedIn] = React.useContext(UserContext);
 
   React.useEffect(() => {
     if (validate(depositAmount, 'depositAmount')){
@@ -12,7 +12,7 @@ function Deposit(){
   }, [depositAmount])
 
   function validate(field, label){
-    if (loggedIn >= 0 && !field) {
+    if (!loggedIn && !field) {
       setButtonDisabled(true);
       return false;
     }
@@ -20,7 +20,7 @@ function Deposit(){
   }
 
   function handleDeposit(){
-    if (loggedIn === -1){
+    if (!loggedIn){
       setStatus("Must log in to make deposit.")
     }
     else {
@@ -31,15 +31,36 @@ function Deposit(){
         setStatus("The deposit minimum is $1. Please try again.")
       }
       else {
-        const newTransaction = accounts[loggedIn].name + " deposited $" + depositAmount + " " + new Date()
-        setAccounts(oldAccounts => {
-          oldAccounts[loggedIn].balance += parseFloat(depositAmount);
-          oldAccounts[loggedIn].history.unshift(newTransaction);
-          return[...oldAccounts]
-        })
-        setShow(false);
-        setStatus("Current Balance: $" + accounts[loggedIn].balance);
-        setButtonDisabled(true);
+        const data = {
+          amount: depositAmount,
+          type: 'deposit',
+          _id: loggedIn._id
+        }
+        const requestOptions = {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        };
+        fetch('/api/updateBalance', requestOptions)
+          .then(response => {
+            if (!response.ok){
+              throw new Error(`Error! Status: ${response.status}`)
+            }
+            return response.json();
+          })
+          .then(responseJSON => {
+            console.log('Response Data:', responseJSON);
+            setButtonDisabled(() => false)
+            setShow(false);
+            setStatus("Current Balance: $" + loggedIn.balance);
+            setLoggedIn(responseJSON)
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            setStatus("Issue depositing funds. Please try again.");
+          });
       }
     }
   }
@@ -58,10 +79,10 @@ function Deposit(){
       body={ show ? (  
         <form>
         <div className="mb-3">
-          <label className="form-label">{loggedIn === -1 ? "Log in to make a deposit." : "Current Balance: $" + accounts[loggedIn].balance}</label>
+          <label className="form-label">{!loggedIn ? "Log in to make a deposit." : "Current Balance: $" + loggedIn.balance}</label>
         </div>
         {
-          loggedIn === -1 ? 
+          !loggedIn ? 
           null : 
           <>
             <div className="mb-3">

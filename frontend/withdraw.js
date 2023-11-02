@@ -3,7 +3,7 @@ function Withdraw(){
   const [status, setStatus] = React.useState('')
   const [withdrawalAmount, setWithdrawalAmount] = React.useState();
   const [buttonDisabled, setButtonDisabled] = React.useState(true);
-  const [accounts, setAccounts, loggedIn, history, setHistory] = React.useContext(UserContext);
+  const [loggedIn, setLoggedIn] = React.useContext(UserContext);
 
   React.useEffect(() => {
     if (validate(withdrawalAmount, 'withdrawalAmount')){
@@ -12,7 +12,7 @@ function Withdraw(){
   }, [withdrawalAmount])
 
   function validate(field, label){
-    if (loggedIn >= 0 && !field) {
+    if (!loggedIn && !field) {
       setButtonDisabled(true);
       return false;
     }
@@ -20,7 +20,7 @@ function Withdraw(){
   }
 
   function handleWithdrawal(){
-    if (loggedIn === -1){
+    if (!loggedIn){
       setStatus("Must log in to make withdrawal.")
     }
     else {
@@ -30,19 +30,40 @@ function Withdraw(){
       else if (parseFloat(withdrawalAmount) <= 0.99){
         setStatus("The withdrawal minimum is $1. Please try again.")
       }
-      else if (accounts[loggedIn].balance < parseFloat(withdrawalAmount)){
+      else if (loggedIn.balance < parseFloat(withdrawalAmount)){
         setStatus("Overdraft alert: Insufficient funds")
       }
       else {
-        const newTransaction = accounts[loggedIn].name + " withdrew $" + withdrawalAmount + " " + new Date()
-        setAccounts(oldAccounts => {
-          oldAccounts[loggedIn].balance -= parseFloat(withdrawalAmount);
-          oldAccounts[loggedIn].history.unshift(newTransaction);
-          return[...oldAccounts]
-        })
-        setShow(false);
-        setStatus("Current Balance: $" + accounts[loggedIn].balance);
-        setButtonDisabled(true);
+        const data = {
+          amount: withdrawalAmount,
+          type: 'withdrawal',
+          _id: loggedIn._id
+        }
+        const requestOptions = {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        };
+        fetch('/api/updateBalance', requestOptions)
+          .then(response => {
+            if (!response.ok){
+              throw new Error(`Error! Status: ${response.status}`)
+            }
+            return response.json();
+          })
+          .then(responseJSON => {
+            console.log('Response Data:', responseJSON);
+            setButtonDisabled(() => false)
+            setShow(false);
+            setStatus("Current Balance: $" + loggedIn.balance);
+            setLoggedIn(responseJSON)
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            setStatus("Issue withdrawing funds. Please try again.");
+          });
       }
     }
   }
@@ -61,10 +82,10 @@ function Withdraw(){
       body={show ? (  
         <form>
         <div className="mb-3">
-          <label className="form-label">{loggedIn === -1 ? "Log in to make a withdrawal." : "Current Balance: $" + accounts[loggedIn].balance}</label>
+          <label className="form-label">{!loggedIn ? "Log in to make a withdrawal." : "Current Balance: $" + loggedIn.balance}</label>
         </div>
         {
-          loggedIn === -1 ?
+          !loggedIn ?
           null :
           <>
             <div className="mb-3">

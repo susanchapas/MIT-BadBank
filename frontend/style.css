@@ -14,6 +14,11 @@ body {
     font-weight: lighter;
 }
 
+.nav-name {
+    color: #ffd23f;
+    font-weight: lighter;
+}
+
 .card-title {
     color: lightskyblue;
 }
@@ -24,5 +29,10 @@ body {
 
 .highlighted {
     background-color: #134067;
+    color: beige;
 }
 
+.add-margin {
+    margin-left: 2%;
+    margin-right: 2%;
+}

@@ -5,7 +5,7 @@ function CreateAccount(){
   const [email, setEmail]       = React.useState('');
   const [password, setPassword] = React.useState('');
   const [buttonDisabled, setButtonDisabled] = React.useState(true);
-  const [accounts, setAccounts] = React.useContext(UserContext);  
+  // const [accounts, setAccounts] = React.useContext(UserContext);  
 
   React.useEffect(() => {
     if (validateForm(false, name,email,password)){
@@ -45,12 +45,39 @@ function CreateAccount(){
   function handleCreate(){
     console.log(name,email,password);
     if (!validateForm(true, name, email, password)) return;
-    setAccounts(oldAccounts => {
-      oldAccounts.push({name,email,password,balance: 0, history: [`${name} created an account on ${new Date()}`]});
-      console.log([...oldAccounts]);
-      return [...oldAccounts]
-    });
-    setShow(false);
+    setButtonDisabled(() => true)
+    const data = {
+      name,
+      email,
+      password,
+      balance: 0,
+      history: [`${name} created an account on ${new Date()}`]
+    }
+    const requestOptions = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    };
+    fetch('/api/createAccount', requestOptions)
+      .then(response => {
+        if (!response.ok){
+          throw new Error(`Error! Status: ${response.status}`)
+        }
+        return response.json();
+      })
+      .then(responseJSON => {
+        console.log('Response Data:', responseJSON);
+        setButtonDisabled(() => false)
+        setShow(false);
+        setStatus('')
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        setStatus("Issue creating account. Are you sure this email isn't already taken?");
+        setButtonDisabled(false);
+      });
   }    
 
   function clearForm(){
