@@ -47,50 +47,24 @@ export async function validateUserPW(req, res, next){
 
 export async function updateBalance(req, res){
     try {
-        let results = await accounts.findOne({_id: new ObjectId(req.body._id)});
-        const resultObj = {
-            _id: results._id,
-            name: results.name,
-            email: results.email,
-            balance: results.balance,
-            history: results.history
-        }
-        if (!resultObj){
-            res.status(500).send();
-            return
-        }
-        else {
-            if (req.body.type == 'deposit'){
-                const updateDoc = {
-                    $set: {
-                        balance: resultObj.balance + req.body.amount,
-                    },
-                    $push: {
-                        history: {
-                            $each: [resultObj.name + " deposited $" + req.body.amount + " " + new Date()],
-                            $position: 0
-                        }
-                    }
+        const isDeposit = req.body.type === "deposit"
+        const updateDoc = {
+            $inc: {
+                balance: (isDeposit ? 1 : -1) * req.body.amount,
+            },
+            $push: {
+                history: {
+                    $each: [req.body.name + ` ${isDeposit ? "deposited" : "withdrew"} $` + req.body.amount + " " + new Date()],
+                    $position: 0
                 }
-                const result = await accounts.updateOne({_id: resultObj._id}, updateDoc)
-                res.send(result)
             }
-            if (req.body.type == 'withdrawal'){
-                const updateDoc = {
-                    $set: {
-                        balance: resultObj.balance - req.body.amount,
-                    },
-                    $push: {
-                        history: {
-                            $each: [resultObj.name + " deposited $" + req.body.amount + " " + new Date()],
-                            $position: 0
-                        }
-                    }
-                }
-                const result = await accounts.updateOne({_id: resultObj._id}, updateDoc)
-                res.send(result)
-            }
-        } 
+        }
+        const result = await accounts.findOneAndUpdate(
+            {_id: new ObjectId( req.body._id )}, 
+            updateDoc,
+            {returnDocument: "after"}
+        )
+        res.send(result)
     } catch (err){
         console.error(err)
         res.status(500).send()

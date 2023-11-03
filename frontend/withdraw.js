@@ -35,9 +35,10 @@ function Withdraw(){
       }
       else {
         const data = {
-          amount: withdrawalAmount,
+          amount: parseFloat(withdrawalAmount),
           type: 'withdrawal',
-          _id: loggedIn._id
+          _id: loggedIn._id,
+          name: loggedIn.name
         }
         const requestOptions = {
           method: 'PATCH',
@@ -55,10 +56,10 @@ function Withdraw(){
           })
           .then(responseJSON => {
             console.log('Response Data:', responseJSON);
+            setLoggedIn(responseJSON) 
             setButtonDisabled(() => false)
             setShow(false);
-            setStatus("Current Balance: $" + loggedIn.balance);
-            setLoggedIn(responseJSON)
+            setStatus("Current Balance: $" + responseJSON.balance);
           })
           .catch(error => {
             console.error('Error:', error);

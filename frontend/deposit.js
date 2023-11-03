@@ -32,9 +32,10 @@ function Deposit(){
       }
       else {
         const data = {
-          amount: depositAmount,
+          amount: parseFloat(depositAmount),
           type: 'deposit',
-          _id: loggedIn._id
+          _id: loggedIn._id,
+          name: loggedIn.name
         }
         const requestOptions = {
           method: 'PATCH',
@@ -52,10 +53,10 @@ function Deposit(){
           })
           .then(responseJSON => {
             console.log('Response Data:', responseJSON);
+            setLoggedIn(responseJSON) 
             setButtonDisabled(() => false)
             setShow(false);
-            setStatus("Current Balance: $" + loggedIn.balance);
-            setLoggedIn(responseJSON)
+            setStatus("Current Balance: $" + responseJSON.balance);
           })
           .catch(error => {
             console.error('Error:', error);
