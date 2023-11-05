@@ -36,3 +36,8 @@ body {
     margin-left: 2%;
     margin-right: 2%;
 }
+
+.button-margin {
+    margin-top: 5%;
+    margin-bottom: 5%;
+}

@@ -22,7 +22,7 @@ export async function pushAccountObj(req, res){
     }
 }
 
-export async function validateUserPW(req, res, next){
+export async function validateUserPW(req, res){
     try {
         let results = await accounts.findOne({email: req.body.email, password: req.body.password});
         const loggedInObj = {
@@ -71,6 +71,14 @@ export async function updateBalance(req, res){
     }
 }
 
-export function deleteAccount(){
-    //accounts.findOneAndDelete()
+export async function deleteAccount(req, res){
+    try {
+        const result = await accounts.findOneAndDelete({
+            email: req.body.email
+        })
+        res.send(result)
+    } catch (err){
+        console.error(err)
+        res.status(500).send()
+    }
 }

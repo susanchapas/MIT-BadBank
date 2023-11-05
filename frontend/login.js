@@ -56,6 +56,7 @@ function Login(){
     setPassword('');
     setShow(true);
     setLoggedIn(null);
+    setStatus('');
   }
 
   function validate(field, label){
