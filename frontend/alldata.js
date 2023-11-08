@@ -22,7 +22,8 @@ function AllData(){
       },
       body: JSON.stringify(data)
     };
-    fetch('/api/deleteAccount', requestOptions)
+    window.firebase.deleteAccount().then(() => {
+      fetch('/api/deleteAccount', requestOptions)
       .then(response => {
         if (!response.ok){
           throw new Error(`Error! Status: ${response.status}`)
@@ -35,6 +36,7 @@ function AllData(){
         setLoggedIn(null);
         setStatus("Account deleted.");
       })
+    })
       .catch(error => {
         console.error('Error:', error);
         setStatus("Could not delete account. Please try again.");

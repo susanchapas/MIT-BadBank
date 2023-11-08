@@ -18,10 +18,38 @@ function Login(){
     }
   }, [loggedIn, email, password])
 
-  function handleLoggedAccount(){
+  function loginWithEmailAndPassword(){
+    console.log(email,password);
+    if (!validateForm(true, email, password)) return;
+    window.firebase.signInWithEmailAndPassword(email, password)
+      .then(credentials => {
+        getAccount(undefined, email)
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        setStatus("Issue logging into account. Please verify your email and password.");
+        setButtonDisabled(false);
+      })
+  }    
+
+  function handleLoginWithGoogle (){
+    window.firebase.signInWithPopup()
+      .then(result => {
+        const user = result.user;
+        console.log(user.displayName, user.email)
+        getAccount(user.displayName, user.email)
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        setStatus("Issue logging into account. Please verify your email and password.");
+        setButtonDisabled(false);
+      })
+  }    
+
+  function getAccount(n, e){
     const data = {
-      email,
-      password
+      name: n,
+      email: e
     }
     const requestOptions = {
       method: 'POST',
@@ -30,7 +58,7 @@ function Login(){
       },
       body: JSON.stringify(data)
     };
-    fetch('/api/login', requestOptions)
+    fetch('/api/getAccount', requestOptions)
       .then(response => {
         if (!response.ok){
           throw new Error(`Error! Status: ${response.status}`)
@@ -44,11 +72,6 @@ function Login(){
         setStatus('');
         setLoggedIn(responseJSON)
       })
-      .catch(error => {
-        console.error('Error:', error);
-        setStatus("Issue logging in. Confirm correct email & password.");
-        setButtonDisabled(false);
-      });
   }
 
   function clearForm(){
@@ -93,14 +116,35 @@ function validateForm(email, password){
           placeholder="Enter Password" value={password} onChange={e => setPassword(e.currentTarget.value)}>
         </input>
       </div>
-      <button type="submit" className={`btn btn-info ${buttonDisabled ? `disabled`: ``}`} 
-        onClick={handleLoggedAccount}>Log In
+      <button 
+        type="submit" 
+        className={`btn btn-info ${buttonDisabled ? `disabled`: ``}`} 
+        id="login"
+        onClick={loginWithEmailAndPassword}
+      >
+        Log In
+      </button>
+      <br/>
+      <button 
+        type="submit" 
+        className={`btn btn-info button-margin`} 
+        id="googlelogin"
+        onClick={handleLoginWithGoogle}
+      >
+        Log In With Google
       </button>
     </form>
     ):(
       <>
       <h5>Welcome back!</h5>
-      <button type="submit" className="btn btn-info" onClick={clearForm}>Log Out</button>
+      <button 
+        type="submit" 
+        className="btn btn-info" 
+        id="logout" 
+        onClick={clearForm}
+      >
+        Log Out
+      </button>
       </>
     )}
     />

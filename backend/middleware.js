@@ -5,7 +5,11 @@ accounts.createIndex({ email: 1}, {unique: true})
 
 export async function pushAccountObj(req, res){
     try {
-        let results = await accounts.insertOne(req.body);
+        let results = await accounts.insertOne({
+            ...req.body,
+            balance: 0,
+            history: [`${req.body.name} created an account on ${new Date()}`]
+        });
         if (!results.insertedId || !results.acknowledged){
             res.status(500).send();
             return
@@ -22,9 +26,13 @@ export async function pushAccountObj(req, res){
     }
 }
 
-export async function validateUserPW(req, res){
+export async function getAccountByEmail(req, res, next){
     try {
-        let results = await accounts.findOne({email: req.body.email, password: req.body.password});
+        let results = await accounts.findOne({email: req.body.email});
+        if(results === null){
+            next()
+            return
+        }
         const loggedInObj = {
             _id: results._id,
             name: results.name,

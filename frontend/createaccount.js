@@ -42,16 +42,11 @@ function CreateAccount(){
     return true;
   }
 
-  function handleCreate(){
-    console.log(name,email,password);
-    if (!validateForm(true, name, email, password)) return;
+  function handleBankAccountCreation(n, e) {
     setButtonDisabled(() => true)
     const data = {
-      name,
-      email,
-      password,
-      balance: 0,
-      history: [`${name} created an account on ${new Date()}`]
+      name: n,
+      email: e
     }
     const requestOptions = {
       method: 'POST',
@@ -73,11 +68,34 @@ function CreateAccount(){
         setShow(false);
         setStatus('')
       })
+  }
+
+  function handleCreateWithEmailAndPassword(){
+    console.log(name,email,password);
+    if (!validateForm(true, name, email, password)) return;
+    window.firebase.createUserWithEmailAndPassword(email, password)
+      .then(credentials => {
+        handleBankAccountCreation(name, email)
+      })
       .catch(error => {
         console.error('Error:', error);
         setStatus("Issue creating account. Are you sure this email isn't already taken?");
         setButtonDisabled(false);
-      });
+      })
+  }    
+
+  function handleCreateWithGoogle(){
+    window.firebase.signInWithPopup()
+      .then(result => {
+        const user = result.user;
+        console.log(user.displayName, user.email)
+        handleBankAccountCreation(user.displayName, user.email)
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        setStatus("Issue creating account. Are you sure this email isn't already taken?");
+        setButtonDisabled(false);
+      })
   }    
 
   function clearForm(){
@@ -106,16 +124,39 @@ function CreateAccount(){
               <input type="password" className="form-control" id="password" placeholder="Enter password" 
                 value={password} onChange={e => setPassword(e.currentTarget.value)}/>
               <br/>
-              <button type="submit" className={`btn btn-info ${buttonDisabled ? `disabled`: ``}`} 
-                onClick={handleCreate}>Create Account
+              <button 
+                type="submit" 
+                className={`btn btn-info ${buttonDisabled ? `disabled`: ``}`} 
+                id="signup"
+                onClick={handleCreateWithEmailAndPassword}
+              >
+                Create Account
+              </button>
+              <br/>
+              <button 
+                type="submit" 
+                className={`btn btn-info button-margin`} 
+                id="googlelogin"
+                onClick={handleCreateWithGoogle}
+              >
+                Create Account with Google
               </button>
               </>
             ):(
               <>
               <h5>Success</h5>
               <button type="submit" className="btn btn-info" 
-                onClick={clearForm}>Add another account
+                onClick={clearForm}>Create another account
               </button>
+              <br/>
+              <a href="#/login/">
+                <button 
+                  type="submit" 
+                  className="btn btn-info button-margin" 
+                  >
+                    Log In
+                </button>
+              </a>
               </>
             )}
     />

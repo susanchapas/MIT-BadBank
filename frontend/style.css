@@ -17,6 +17,7 @@ body {
 .nav-name {
     color: #ffd23f;
     font-weight: lighter;
+    text-align: right;
 }
 
 .card-title {

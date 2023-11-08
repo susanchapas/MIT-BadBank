@@ -90,10 +90,12 @@ function NavBar(){
               </a>
             </li>
           })}
-          <li className={`nav-name nav-link`}>
-            {!loggedIn ? null : loggedIn.name}
-          </li>     
-        </ul>
+          </ul>
+            <ul className={`justify-content-end`}>
+              <li className={`nav-name nav-link`}>
+                {!loggedIn ? null : loggedIn.name}
+              </li>     
+            </ul>
       </div>
     </nav>
     </>
