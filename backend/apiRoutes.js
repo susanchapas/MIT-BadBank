@@ -57,8 +57,8 @@ app.post('/createAccount', pushAccountObj)
  * @swagger
  * /api/getAccount:
  *   post:
- *     summary: Creating account via Google
- *     description: Authenticate via Firebase & push new account object to Mongo DB
+ *     summary: Get account object based on email (if one doesn't exist, add one)
+ *     description: Authenticate via Firebase & push any new Google account objects to MongoDB
  *     requestBody:
  *       content:
  *         application/json:
@@ -101,7 +101,7 @@ app.post('/getAccount', getAccountByEmail, pushAccountObj)
  * /api/updateBalance:
  *   patch:
  *     summary: Handle withdrawals and deposits
- *     description: Authenticate via Firebase & push updates to account balances to Mongo db
+ *     description: Authenticate via Firebase & push updates to account balances & history to MongoDB
  *     requestBody:
  *       content:
  *         application/json:

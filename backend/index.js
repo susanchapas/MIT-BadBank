@@ -28,6 +28,6 @@ const options = {
 const swaggerSpec = swaggerJSDoc(options)
 app.use("/swagger", swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 
-app.listen(3000, () => {
+app.listen(process.env.PORT || 3000, () => {
     console.log("RUNNING");
 })
