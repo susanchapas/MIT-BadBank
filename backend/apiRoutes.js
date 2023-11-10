@@ -99,7 +99,7 @@ app.post('/getAccount', getAccountByEmail, pushAccountObj)
 /**
  * @swagger
  * /api/updateBalance:
- *   post:
+ *   patch:
  *     summary: Handle withdrawals and deposits
  *     description: Authenticate via Firebase & push updates to account balances to Mongo db
  *     requestBody:
@@ -186,7 +186,7 @@ app.post('/getAccount', getAccountByEmail, pushAccountObj)
 /**
  * @swagger
  * /api/deleteAccount:
- *   post:
+ *   delete:
  *     summary: User deleting their account
  *     description: Delete account data from Mongo DB and Firebase
  *     requestBody:

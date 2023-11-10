@@ -3,7 +3,6 @@ function NavBar(){
   const loginPopover = React.useRef()
   const depositPopover = React.useRef()
   const withdrawPopover = React.useRef()
-  //const balancePopover = React.useRef()
   const allDataPopover = React.useRef()
   const [selectedNav, setSelectedNav] = React.useState()
   const [loggedIn] = React.useContext(UserContext);
@@ -13,7 +12,6 @@ function NavBar(){
     var loginPopoverInstance = new bootstrap.Tooltip(loginPopover.current)
     var depositPopoverInstance = new bootstrap.Tooltip(depositPopover.current)
     var withdrawPopoverInstance = new bootstrap.Tooltip(withdrawPopover.current)
-    //var balancePopoverInstance = new bootstrap.Tooltip(balancePopover.current)
     var allDataPopoverInstance = new bootstrap.Tooltip(allDataPopover.current)
   }, [])
 
@@ -46,13 +44,6 @@ function NavBar(){
       href: "#/withdraw/",
       content: "Withdraw"
     },
-    // {
-    //   id: "balanceNav",
-    //   ref: balancePopover,
-    //   popoverTitle: "View your account balance",
-    //   href: "#/balance/",
-    //   content: "Balance"
-    // },
     {
       id: "allDataNav",
       ref: allDataPopover,
@@ -63,41 +54,37 @@ function NavBar(){
   ];
 
   return(
-    <>
-    <nav className="navbar bg-dark navbar-expand-lg bg-dark">
-      <a className="navbar-brand add-margin" onClick={() => {setSelectedNav(-1)}} href="#">Apex Bank</a>
-      <button className="navbar-toggler" type="button" 
-      data-bs-toggle="collapse" 
-      data-bs-target="#navbarSupportedContent" 
-      aria-controls="navbarSupportedContent" 
-      aria-expanded="false" aria-label="Toggle navigation">
-        <span className="navbar-toggler-icon"></span>
-      </button>
-      <div className="collapse navbar-collapse" id="navbarNav">
-        <ul className="navbar-nav">
-          {navList.map((item, index) => {
-            return <li 
-              key={`nav-bar-item-${index}`}
-              className={`nav-item ${selectedNav === index ? "highlighted" : ""}`} 
-              onClick={() => {setSelectedNav(index)}}
-            >
-              <a className={`nav-link`} id={item.id}
-                ref={item.ref} 
-                data-bs-toggle="tooltip" data-bs-placement="bottom" 
-                data-bs-title={item.popoverTitle} data-bs-trigger="hover"
-                href={item.href}>
-                  {item.content}
-              </a>
-            </li>
-          })}
+    <nav className="navbar navbar-expand-md bg-dark">
+      <div className="container-fluid">
+        <a className="navbar-brand add-margin" onClick={() => {setSelectedNav(-1)}} href="#">Apex Bank</a>
+        <button className="navbar-toggler  navbar-dark" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span className="navbar-toggler-icon"></span>
+        </button>
+        <div className="collapse navbar-collapse" id="navbarNav">
+          <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+            {navList.map((item, index) => {
+              return <li 
+                key={`nav-bar-item-${index}`}
+                className={`nav-item ${selectedNav === index ? "highlighted" : ""}`} 
+                onClick={() => {setSelectedNav(index)}}
+              >
+                <a className={`nav-link`} id={item.id}
+                  ref={item.ref} 
+                  data-bs-toggle="tooltip" data-bs-placement="bottom" 
+                  data-bs-title={item.popoverTitle} data-bs-trigger="hover"
+                  href={item.href}>
+                    {item.content}
+                </a>
+              </li>
+            })}
           </ul>
-            <ul className={`justify-content-end`}>
-              <li className={`nav-name nav-link`}>
-                {!loggedIn ? null : loggedIn.name}
-              </li>     
-            </ul>
+          <span className="d-flex">
+            <div className={`nav-name nav-link me-2`}>
+              {!loggedIn ? null : loggedIn.name}
+            </div> 
+          </span>
+        </div>
       </div>
     </nav>
-    </>
   );
 }
