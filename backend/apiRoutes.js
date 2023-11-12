@@ -139,50 +139,6 @@ app.post('/getAccount', getAccountByEmail, pushAccountObj)
  */
 app.patch('/updateBalance', updateBalance)
 
-
-/**
- * @swagger
- * /api/getAccount:
- *   post:
- *     summary: Creating account via Google
- *     description: Authenticate via Firebase & push new account object to Mongo DB
- *     requestBody:
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               name:
- *                 type: string
- *               email:
- *                 type: string
- *             required:
- *               - email
- *     responses:
- *       500:
- *         description: error has occured.
- *       200:
- *         description: User created successfully.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 name:
- *                   type: string
- *                 email:
- *                   type: string
- *                 balance:
- *                   type: number
- *                 history:
- *                   type: array
- *                   items:
- *                     type: string
- *                 _id:
- *                   type: string
- */
-app.post('/getAccount', getAccountByEmail, pushAccountObj)
-
 /**
  * @swagger
  * /api/deleteAccount:
